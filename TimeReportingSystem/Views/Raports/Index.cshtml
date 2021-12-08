@@ -1,0 +1,184 @@
+
+@model TimeReportingSystem.Models.Raport
+@{
+    ViewData["Title"] = "Moje aktywności";
+    var Months = new[]{"Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec", "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"};
+    var selectedMonth = Int32.Parse(ViewData["Month"].ToString());
+    var selectedYear = ViewData["Year"] as string;
+    var selectedYearNumber = Int32.Parse(selectedYear);
+    var isSubmitted = (bool)ViewData["IsSubmitted"];
+    string d = DateTime.DaysInMonth(selectedYearNumber, selectedMonth).ToString();
+    string selectedDay = "";
+    int selectedDayNumber = 0;
+    double hours = 0;
+    if(ViewData["Day"] != null){
+        selectedDay = ViewData["Day"] as string;
+        selectedDayNumber = Int32.Parse(selectedDay);
+        hours = (double)ViewData["Hours"];
+        hours = Math.Round(hours, 3);
+    }
+}
+
+@if(ViewData["Day"] != null){
+    <h1>@ViewData["Title"] za @selectedDay - @Months[selectedMonth - 1] - @selectedYear r</h1>
+    
+    <p>Suma godzin dla danego dnia: @hours</p>
+}
+else{
+    <h1>@ViewData["Title"] za @Months[selectedMonth - 1] - @selectedYear r</h1>
+}
+ 
+<p>
+    @if (!isSubmitted)
+    {
+        <a asp-action="CreateEntry" asp-route-month="@selectedMonth" asp-route-year="@selectedYear">Dodaj nową aktyność za @Months[selectedMonth - 1] - @selectedYear</a>
+    }
+</p>
+<form asp-action="Index" method="get">
+    <div class="row justify-content-end no-gutters mb-1">
+        <div class="col-1">
+            <input type="hidden" name="month" value="@selectedMonth">
+            <input type="hidden" name="year" value="@selectedYearNumber">
+            <select class="form-control btn-primary" name="day">
+                @for (int i = 1; i <= Int32.Parse(d); i++)
+                {
+                    <option value="@i">@i</option>
+                }
+            </select>
+        </div>
+        &nbsp;
+        <div class="col-1">
+            <input  type="submit" value="Pokaż dzień" class="btn btn-primary"/>
+        </div>
+    </div>
+</form>
+
+
+<form asp-action="Index" method="get">
+    <div class="row justify-content-end no-gutters">
+        <div class="col-sm-2">
+            <select class="form-control btn-primary" id="month" name="month">
+                @for (int i = 1; i <= Months.Length; i++)
+                {
+                    if(selectedMonth == i){
+                        <option selected value=@i>@Months[i-1]</option>
+                    }
+                    else{
+                        <option value=@i>@Months[i-1]</option>
+                    }
+                }
+            </select>
+        </div>
+        &nbsp;
+        <div class="col-1">
+            <select class="form-control btn-primary " id="year" name="year">
+                @for (int i = DateTime.Now.Year; i > DateTime.Now.Year - 15; i--)
+                {
+                    if(selectedYearNumber == i){
+                        <option selected value=@i>@i</option>
+                    }
+                    else{
+                        <option value=@i>@i</option>
+                    }
+                    
+                }
+            </select>
+        </div>
+        &nbsp;
+        <div class="col-1">
+            <input  type="submit" value="Pokaż okres" class="btn btn-primary"/>
+        </div>
+    </div>
+</form>
+
+@if(ViewData["Raport"].ToString() == "true"){
+    <table class="table table-bordered table-sm">
+        <thead>
+            <th>
+                Kod aktywności
+            </th>
+            <th>
+                Data aktywności
+            </th>
+            <th>
+                Kod Podkategorii
+            </th>
+            <th>
+                Zgłoszony czas
+            </th>
+            <th></th>
+        </thead>
+        <tbody>      
+            @for (int index = 0; index < Model.entries.Count; index++)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model.entries[index].code)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model.entries[index].date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model.entries[index].subcode)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model.entries[index].time)
+                    </td>
+                    <td>
+                        <div class="flex-wrap text-center">
+                            <div class="btn-group " role="group" aria-label="Basic example">
+                                <a class="btn btn-success" asp-action="Display" asp-controller="Raports"
+                                asp-route-index="@index" 
+                                asp-route-month="@selectedMonth" 
+                                asp-route-year="@selectedYear"  
+                                >szczegóły</a>
+                                @if(Model.frozen == false){
+                                    <a class="btn btn-warning" asp-action="Edit" asp-controller="Raports" 
+                                    asp-route-index="@index" 
+                                    asp-route-month="@selectedMonth" 
+                                    asp-route-year="@selectedYear"
+                                    >Edytuj</a>
+                                    <a class="btn btn-danger" asp-action="Delete" asp-controller="Raports" 
+                                    asp-route-index="@index" 
+                                    asp-route-month="@selectedMonth" 
+                                    asp-route-year="@selectedYear"
+                                    >Usuń</a>
+                                }
+                            </div>
+                        </div>
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+    </table>
+    @if(Model.frozen == false){
+        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#submitModal">
+          Zatwierdź okres  
+        </button>
+        <div class="modal fade" id="submitModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                <div class="modal-body">
+                   <p>Czy jesteś pewny?</p>
+                   <p>Po zatwierdzeniu nie możesz dodawać nowych aktywności na ten miesiąc, edytować ich ani usuwać!</p>
+                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Anuluj</button>
+                        <a class="btn btn-success" asp-action="Submit" asp-route-month="@selectedMonth" asp-route-year="@selectedYear">Zatwierdź okres</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+else{
+    <p class="text-center">Wybrany okres rozliczeniowy nie zawiera żadnych wpisów o aktywnościach.</p>
+}

@@ -1,0 +1,110 @@
+@model TimeReportingSystem.Models.Entry
+
+@{
+    ViewData["Title"] = "Edytuj aktywność";
+    Dictionary<string, List<string>> ProjectsInfo = ViewData["projectsInfo"] as Dictionary<string, List<string>>;
+    string y = ViewData["Year"] as string;
+    string m = ViewData["Month"] as string;
+    string index = ViewData["Index"] as string;
+    Entry oldEntry = ViewData["Entry"] as Entry;
+    
+    int mInt = Int32.Parse(m);
+    if(mInt <= 9){
+        m = '0' + m;
+    }
+    string d = DateTime.DaysInMonth(Int32.Parse(y), Int32.Parse(m)).ToString();
+    
+
+
+}
+<h1>@ViewData["Title"]</h1>
+
+<div class="col col-4 justify-content-lg-start">
+    <form asp-action="Edit">
+        <input type="hidden" id="index" name="index" value="@index">
+        <div class="form-horizontal">
+            <div asp-validation-summary="All"></div>
+            <div class="form-group">
+                    <div class="row">
+                        <div class="col">
+                            <label asp-for="code">Kod aktywności</label>
+                            <select class="form-control btn-secondary col-md-8" id="code" name="code">
+                                <option value=null id="0">Brak</option>
+                                @foreach (var item in ProjectsInfo)
+                                {
+                                    if(item.Key == oldEntry.code){
+                                        <option selected value="@item.Key" id="@item.Key">@item.Key</option>
+                                    }
+                                    else{
+                                        <option value="@item.Key" id="@item.Key">@item.Key</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label asp-for="code">Kod pod aktywności</label>
+                            <select class="form-control btn-secondary col-md-8" id="subcode" name="subcode">
+                                <option value=null id="0" name="nullSub">Brak</option>
+                                @foreach (var item in ProjectsInfo)
+                                {
+                                    foreach (var value in item.Value)
+                                    {
+                                        if(item.Key == oldEntry.code && value == oldEntry.subcode)
+                                        {
+                                            <option selected value="@value" id="@value" name="project+@item.Key">@value</option>
+                                        }
+                                        else
+                                        {
+                                            <option hidden value="@value" id="@value" name="project+@item.Key">@value</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">&nbsp;</div>
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <label asp-for="date">Datę aktywności</label>
+                            <input type="date" id="date" name="date"
+                            min="@y-@m-01" max="@y-@m-@d" value="@oldEntry.date">
+                            
+                        </div>
+                    </div>
+                    <div class="row"></div>
+                    <div class="row">
+                        <label asp-for="time">Ilość deklarowanych minut</label>
+                        <input type="number" id="time" name="time" min="0" value="@oldEntry.time"> 
+                    </div>
+                    <div class="row"></div>
+                    <div class="row">
+                        <label asp-for="description">Opis aktywności</label>
+                        <textarea class="form-control" id="description" name="description" rows="4">@oldEntry.description</textarea>
+                    </div>
+                    <div class="row">
+                        <input type="submit" value="Zatwierdź" class="btn btn-primary"/>
+                        <a href="##" onClick="history.go(-1); return false;" class="btn btn-warning col">Anuluj</a>
+                    </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $('#code').change(function() {
+            var selected = $(':selected', this)[0].id;
+            console.log(selected);
+            var nameSpec = 'project+' + selected;
+            var send2 = document.getElementsByName(nameSpec);
+            $("[name^='project+']").each(function(){
+                $(this).attr("hidden", true);
+            })
+            $("[name='nullSub']").prop("selected", true);
+            $('[name="' + nameSpec + '"]').each(function(){
+                $(this).removeAttr("hidden");
+            })
+
+        }).trigger('change');
+    </script>
+}
