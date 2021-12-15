@@ -13,7 +13,7 @@ namespace TimeReportingSystem.Controllers
 {
     public class HomeController : Controller
     {
-
+        private RaportContext _context;
         private readonly ILogger<HomeController> _logger;
 
         public HomeController(ILogger<HomeController> logger)
@@ -23,6 +23,8 @@ namespace TimeReportingSystem.Controllers
 
         public IActionResult Index()
         {
+            // var t = new RaportsInitializer();
+            // t.Seed();
             ViewData["User"] = HttpContext.Session.GetString(Controllers.UsersController.SessionUser);
             return View();
         }

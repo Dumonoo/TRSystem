@@ -19,20 +19,16 @@
                 <input asp-for="surname" class="form-control">
             </div>
             <div class="form-group">
-                <label asp-for="birthDay">Data urodzenia</label><br>
-                <input type="date" asp-for="birthDay" class="form-control">
-            </div>
-            <div class="form-group">
                 <label asp-for="userName">Nazwa użytkownika</label><br>
                 <input asp-for="userName" class="form-control">
             </div>
             <div class="form-group">
-                <input type="submit" value="Zarejestruj" class="btn btn-primary"/>
+                <input type="submit" value="Zarejestruj" class="btn btn-primary" />
             </div>
         </div>
     </form>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

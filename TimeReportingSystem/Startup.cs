@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using TimeReportingSystem.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace TimeReportingSystem
 {
@@ -39,7 +41,8 @@ namespace TimeReportingSystem
             });
             services.AddControllersWithViews();
 
-            // services.AddDbContext<TRSContext>
+            // services.AddDbContext<RaportContext>(options => 
+            //     options.UseMySQL(Configuration.GetConnectionString("RaportContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

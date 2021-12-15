@@ -1,5 +1,5 @@
 
-@model TimeReportingSystem.Models.Raport
+@model IEnumerable<TimeReportingSystem.Models.Raport>
 @{
     ViewData["Title"] = "Moje aktywności";
     var Months = new[]{"Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec", "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"};
@@ -27,8 +27,12 @@
 else{
     <h1>@ViewData["Title"] za @Months[selectedMonth - 1] - @selectedYear r</h1>
 }
- 
-<p>
+
+@foreach (var item in Model)
+{
+    <p>@Html.DisplayFor(modelItem => item.year)</p>
+}
+@* <p>
     @if (!isSubmitted)
     {
         <a asp-action="CreateEntry" asp-route-month="@selectedMonth" asp-route-year="@selectedYear">Dodaj nową aktyność za @Months[selectedMonth - 1] - @selectedYear</a>
@@ -181,4 +185,4 @@ else{
 }
 else{
     <p class="text-center">Wybrany okres rozliczeniowy nie zawiera żadnych wpisów o aktywnościach.</p>
-}
+} *@

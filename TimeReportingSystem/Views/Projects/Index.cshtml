@@ -1,4 +1,4 @@
-@model TimeReportingSystem.Models.Activities
+@model IEnumerable<TimeReportingSystem.Models.Activity>
 @{
     ViewData["Title"] = "Otwarte Projekty";
 }
@@ -22,9 +22,8 @@
             Pod aktywności
         </th>
     </thead>
-
-    <tbody>
-        @foreach (var item in Model.activities)
+     <tbody>
+        @foreach (var item in Model)
         {
             @if(item.active){
                 <tr>
@@ -35,7 +34,7 @@
                         @Html.DisplayFor(modelItem => item.code)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.manager)
+                        @Html.DisplayFor(modelItem => item.manager.surname)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.budget)
