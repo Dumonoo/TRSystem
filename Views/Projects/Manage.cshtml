@@ -1,0 +1,186 @@
+@model List<TimeReportingSystem.Models.ProjectUserRaportModelView>
+@{
+    ViewData["Title"] = "Panel zarządzania projektem - " + ViewData["ProjectCode"];
+
+    var projectCode = ViewData["ProjectCode"] as string;
+    var Months = new[]{"Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec", "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"};
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>Czas podawany jest w minutach</p>
+<a href="##" onClick="history.go(-1); return false;" class="btn btn-warning">Powrót</a>
+<hr>
+<h2>Aktywności zatwierdzone do akceptacji</h2>
+
+<table class="table table-bordered table-sm">
+    <thead>
+        <th>
+            Nazwa użytkownika
+        </th>
+        <th>
+            Imię
+        </th>
+        <th>
+            Nazwisko
+        </th>
+        <th>
+            Okres
+        </th>
+        <th>
+            Czas zgłoszony:
+        </th>
+        <th>
+            Czas do akceptacji:
+        </th>
+        <th>
+            Przyciski
+        </th>
+    </thead>
+    <tbody>
+        @foreach (var entry in Model)
+        {
+            if(entry.frozen && !entry.accepted)
+            {
+                <tr>
+                    <td>@entry.userName</td>
+                    <td>@entry.name</td>
+                    <td>@entry.surname</td>
+                    <td>@entry.period</td>
+                    <td>@entry.timeSubmitted</td>
+                    
+                    <form asp-action="Accept" id="form">
+                        <td><input type="number" min="0" step="1" id="acceptedTime" name="acceptedTime" 
+                            value="@entry.timeSubmitted">
+                            <input type="hidden" id="projectCode" name="projectCode" value="@entry.projectCode">
+                            <input type="hidden" id="userName" name="id" value="@entry.raportId">
+                        </td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                @if(entry.projectActive){
+                                    <input type="submit" value="Zatwierdź" class="btn btn-primary">
+                                }
+                                <a class="btn btn-success" asp-action="Details" 
+                                asp-route-id="@entry.raportId"
+                                asp-route-projectCode="@entry.projectCode"
+                                >Szczegóły</a>
+                            </div>
+                        </td>
+                    </form>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<br>
+
+<h2>Aktywności zaakceptowane</h2>
+<table class="table table-bordered table-sm">
+    <thead>
+        <th>
+            Nazwa użytkownika
+        </th>
+        <th>
+            Imię
+        </th>
+        <th>
+            Nazwisko
+        </th>
+        <th>
+            Okres
+        </th>
+        <th>
+            Czas zgłoszony:
+        </th>
+        <th>
+            Czas zaakceptowany:
+        </th>
+        <th>
+            Przyciski
+        </th>
+    </thead>
+    <tbody>
+        @foreach (var entry in Model)
+        {
+            if(entry.frozen && entry.accepted)
+            {
+                <tr>
+                    <td>@entry.userName</td>
+                    <td>@entry.name</td>
+                    <td>@entry.surname</td>
+                    <td>@entry.period</td>
+                    <td>@entry.timeSubmitted</td>
+                    
+                    <form asp-action="Change" id="form">
+                        <td><input type="number" min="0" step="1" id="acceptedTime" name="acceptedTime" 
+                            value="@entry.timeAccepted">
+                            <input type="hidden" id="projectCode" name="projectCode" value="@entry.projectCode">
+                            <input type="hidden" id="raportId" name="id" value="@entry.raportId">
+                            <input type="hidden" id="userName" name="oldAcceptedTime" value="@entry.timeAccepted">
+                        </td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                @if (entry.projectActive)
+                                {
+                                    <input type="submit" value="Zmień" class="btn btn-primary">
+                                }
+                                <a class="btn btn-success" asp-action="Details" 
+                                asp-route-id="@entry.raportId"
+                                asp-route-projectCode="@entry.projectCode"
+                                >Szczegóły</a>
+                            </div>
+                        </td>
+                    </form>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<br>
+
+<h2>Aktywności niezatwierdzone</h2>
+<table class="table table-bordered table-sm">
+    <thead>
+        <th>
+            Nazwa użytkownika
+        </th>
+        <th>
+            Imię
+        </th>
+        <th>
+            Nazwisko
+        </th>
+        <th>
+            Okres
+        </th>
+        <th>
+            Czas zgłoszony:
+        </th>
+        <th>
+            Przyciski
+        </th>
+    </thead>
+        <tbody>
+        @foreach (var entry in Model)
+        {
+            if(!entry.frozen)
+            {
+                <tr>
+                    <td>@entry.userName</td>
+                    <td>@entry.name</td>
+                    <td>@entry.surname</td>
+                    <td>@entry.period</td>
+                    <td>@entry.timeSubmitted</td>
+                    <td>
+                        <a class="btn btn-success" asp-action="Details" 
+                                asp-route-id="@entry.raportId"
+                                asp-route-projectCode="@entry.projectCode"
+                                >Szczegóły</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

@@ -1,0 +1,31 @@
+@model TimeReportingSystem.Models.Entry
+@{
+    ViewData["Title"] = "Szczegóły aktywności";
+    
+}
+<h1>@ViewData["Title"]</h1>
+<div class="container">
+    <div class="col-4">
+        <div class="row">
+            <p>Kod projektu: @Html.DisplayFor(modelItem => Model.Activity.code)</p>
+        </div>
+        <div class="row">
+            <p>Data wykonania: @Html.DisplayFor(modelItem => Model.date)</p>
+        </div>
+        <div class="row">
+            <p>Pod aktywność: @Html.DisplayFor(modelItem => Model.Subactivity.code)</p>
+        </div>
+        <div class="row">
+            <p>Zareportowany czas: @Html.DisplayFor(modelItem => Model.time)</p>
+        </div>
+        <div class="row">
+            <textarea disabled>@Html.DisplayFor(modelItem => Model.description)</textarea>
+        </div>
+        <div class="row">
+            <a href="##" onClick="history.go(-1); return false;" class="btn btn-warning col">Powrót</a>
+        </div>
+    </div>
+</div>
+
+
+

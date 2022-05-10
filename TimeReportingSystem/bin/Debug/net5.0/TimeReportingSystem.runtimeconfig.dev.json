@@ -1,8 +1,0 @@
-{
-  "runtimeOptions": {
-    "additionalProbingPaths": [
-      "/home/dumono/.dotnet/store/|arch|/|tfm|",
-      "/home/dumono/.nuget/packages"
-    ]
-  }
-}

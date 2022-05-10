@@ -1,0 +1,20 @@
+@{
+    ViewData["Title"] = "Błąd wspołbieżności!!";
+}
+
+<h1 class="text-danger">Error.</h1>
+<h2 class="text-danger">Wystąpił błąd podczas przetwarzania twojego polecenia</h2>
+
+@if (ViewData["Error"] != null)
+{
+    <h1>@ViewData["Title"]</h1>
+
+    <p>Wykryto błąd wspołbieżności podczas wykonywania operacji @ViewData["Operacja"]</p>
+    <p>Treść błędu: <strong> @ViewData["ErrorMessage"] </strong></p>
+    <p>Spróbuj jeszcze raz</p>
+    
+}
+else
+{
+    <h1>Ups.. coś poszło nie tak</h1>
+}
